@@ -1,0 +1,533 @@
+<html>
+<title>びじゅつかん？</title>
+
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+
+////////ブロックの種類 
+////////	0=地面 		1=照明 		2=光ってる場所 	3=壁 
+////////	4=印壁① 	5=印壁② 	6=印壁③ 		7=印壁④	8=印壁０	 9=照明×候補
+
+var MASU_LINE = 20;
+var MASU_MAX = MASU_LINE*MASU_LINE;
+
+
+var i = 0;
+var m = 0;
+var j = 0;
+var z = 0;
+var lightPos = new Array(255);
+var lightPosNum =0;
+
+function set(i){
+
+	if( setch==0 ){
+		if(masu[i]==0){
+			masu[i]=9;
+			document.images[i].src = "zimen1.gif";
+		}
+		else if(masu[i]==9){
+			masu[i]=0;
+			document.images[i].src = "zimen.gif";
+		}
+		return(0);
+	}
+
+	if(masu[i]==1){
+		lightOff(i);
+		check(-1);
+	}
+	else if(masu[i]==0){
+		
+
+		if( check(i) == 1 ){
+			document.images[i].src = "light2.gif";
+			masu[i]=1;
+			lightPos[ lightPosNum++ ] = i ;
+			lightOn(i);
+		}
+		else
+		{
+			masu[i]=0;
+			confirm("そこに照明はおけねぇよ。");
+		}
+/*
+			document.images[i].src = "light2.gif";
+			masu[i]=1;
+			lightPos[ lightPosNum++ ] = i ;
+			lightOn(i);		
+*/
+
+	}
+
+}
+
+
+////数値壁の周りに適切数な照明がおいてあるかどうか
+function check(i){
+
+	z=0;
+	j=0;
+
+
+	////取り敢えず照明を配置してみて。
+	if(i>-1)
+		masu[i]=1;
+
+	for(m=0;m< MASU_MAX ;m++){
+		if( masu[m] >= 4 ){
+			////ブロック①のまわりに照明が１つしかないか確認
+			if(masu[m]==4){
+				if(masu[m+1] == 1 && ( (m%MASU_LINE) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( (m%MASU_LINE) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if( z > 1)return(-1);
+				if(z==1)document.images[m].src = "kabe1_.gif";
+				else document.images[m].src = "kabe1.gif";
+				z=0;
+			}
+			////ブロック②のまわりに照明が２つしかないか確認
+			if(masu[m]==5){
+				if(masu[m+1] == 1 && ( (m%MASU_LINE) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( (m%MASU_LINE) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if( z > 2)return(-1);
+				if(z==2)document.images[m].src = "kabe2_.gif";
+				else document.images[m].src = "kabe2.gif";
+				z=0;
+			}
+			////ブロック③のまわりに照明が３つしかないか確認
+			if(masu[m]==6){
+				if(masu[m+1] == 1 && ( (m%MASU_LINE) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( (m%MASU_LINE) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if( z > 3)return(-1);
+				if(z==3)document.images[m].src = "kabe3_.gif";
+				else document.images[m].src = "kabe3.gif";
+				z=0;
+			}
+			////ブロック０のまわりに照明が０つしかないか確認
+			if(masu[m]==7){
+				if(masu[m+1] == 1 && ( (m%MASU_LINE) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( (m%MASU_LINE) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if( z > 0)return(-1);
+				z=0;
+			}
+			////ブロック４
+			if(masu[m]==8){
+				if(masu[m+1] == 1 && ( (m%MASU_LINE) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( (m%MASU_LINE) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if(z==4)document.images[m].src = "kabe4_.gif";
+				else document.images[m].src = "kabe4.gif";
+				z=0;
+			}
+			
+		
+		}
+	}
+
+	return(1);
+	
+}
+
+
+function lightOn(i){
+
+	////照明から十字に発射される光表示
+	z=i% MASU_LINE ;
+	for(m=1;m< MASU_LINE ;m++){
+		if(m+z < MASU_LINE ){
+			if(masu[i+m] >= 3 && masu[i+m] < 9)
+				break;
+			document.images[i+m].src = "light.gif";
+			masu[i+m] = 2;
+		}
+	}
+	for(m=1;m< MASU_LINE ;m++){
+		if(z-m > -1){
+			if(masu[i-m] >= 3 && masu[i-m] < 9)
+				break;
+			document.images[i-m].src = "light.gif";
+			masu[i-m] = 2;
+		}
+	}
+	
+	for(m= MASU_LINE ; m< MASU_MAX ;m+=MASU_LINE){
+		if(i+m<  MASU_MAX ){
+			if(masu[i+m] >= 3 && masu[i+m] < 9)
+				break;
+			document.images[i+m].src = "light.gif";
+			masu[i+m] = 2;
+		}
+	}
+	
+	for(m=MASU_LINE ;m<MASU_MAX ;m+=MASU_LINE){
+		if(i-m>-1){
+			if(masu[i-m] >= 3 && masu[i-m] < 9)
+				break;
+			document.images[i-m].src = "light.gif";
+			masu[i-m] = 2;
+		}
+	}
+
+
+}
+
+
+function lightOff(i){
+
+
+	////照明の位置を配列に入れ直す
+	for(m=0 ;m< MASU_MAX ;m++)
+		if( lightPos[m] == i) {
+			
+			for(j=0; j+m < lightPosNum; j++)
+				lightPos[m+j] = lightPos[m+j+1];
+				lightPosNum--;
+			break;
+		}
+	////クリックした照明を１つ消す
+	document.images[i].src = "zimen.gif";
+	masu[i]=0;
+	
+	////一度、全部光を消す
+	for(m=0; m< MASU_MAX ;m++){
+		if(masu[m] == 2){
+			document.images[m].src = "zimen.gif";
+			masu[m] = 0;
+		}
+	}
+	
+	////照明を再配置後、光射出
+	for(m=0;m< lightPosNum ; m++){
+		masu[ lightPos[ m ] ] = 1;
+		document.images[ lightPos[ m ] ].src = "light2.gif";
+	}
+	for(j=0; j < lightPosNum ; j++)
+		lightOn( (lightPos[j]) );
+	
+
+
+}
+
+////クリア時、間違っていないかチェックa\/////////////////////
+function okk(){
+
+	z=0;
+	ch=0;
+	for( m=0 ; m < MASU_MAX ; m++ )
+		if( masu[m]==0 ){
+			confirm("光が届いてない地面があるにゃん・・・orz");
+			return(-1);
+	}
+
+	for(m=0; m < MASU_MAX ;m++){
+		if( masu[m] >= 4 ){
+			////ブロック①のまわりに照明が１つしかないか確認
+			if(masu[m]==4){
+				z=0;
+				if(masu[m+1] == 1 && ( ( m % MASU_LINE ) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( ( m % MASU_LINE ) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m % MASU_MAX ) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m % MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if(z!=1){
+					confirm("適切に照明が置かれてないにゃん・・・orz");
+					return(-1);
+				}
+			}
+			////ブロック②のまわりに照明が２つしかないか確認
+			if(masu[m]==5){
+				z=0;
+				if(masu[m+1] == 1 && ( (m%MASU_LINE) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( (m%MASU_LINE) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if(z!=2){
+					confirm("適切に照明が置かれてないにゃん・・・orz");
+					return(-1);
+				}
+			}
+			////ブロック③のまわりに照明が３つしかないか確認
+			if(masu[m]==6){
+				z=0;
+				if(masu[m+1] == 1 && ( (m%MASU_LINE) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( (m%MASU_LINE) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if(z!=3){
+					confirm("適切に照明が置かれてないにゃん・・・orz");
+					return(-1);
+				}				
+			}
+			////ブロック０のまわりに照明が０つしかないか確認
+			if(masu[m]==7){
+				z=0;
+				if(masu[m+1] == 1 && ( (m%10) != (MASU_LINE-1) ) )z++;
+				if(masu[m-1] == 1 && ( (m%10) != 0 )  )z++;
+				if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+				if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+				if(z!=0){
+					confirm("適切に照明が置かれてないにゃん・・・orz");
+					return(-1);
+				}
+			}
+			
+		
+		}
+	}
+
+	confirm("　完　全　制　覇　ＧＲＥＡＴ！");
+
+}
+
+////問題生成アルゴリズム/////////////////////
+function mondai(){
+
+	////ランダムにブロック配置
+for(m=0;m< MASU_MAX ;m++){
+	if( Math.floor(Math.random()*100) < Math.floor(Math.random()*50))
+		masu[m] = 3;
+	else
+		masu[m] = 0;
+	
+}
+
+
+if( Math.floor(Math.random()*100) < 50)
+for(m=(MASU_MAX/2);m< MASU_MAX ;m++)
+		masu[m] = masu[ (MASU_MAX-1) - m ];
+
+
+	////照明を適当に配置
+	var ch=0;
+	z=0;
+	
+
+	for(a=0;a<50000;a++){
+
+		i=Math.floor(Math.random()*MASU_MAX);
+		if(masu[i]==0)masu[i]=1;
+		else{
+			for(m=0;m<MASU_MAX;m++)
+				if(masu[m]==0){
+					i=m;
+					masu[i]=1;
+					break;
+				}
+		}
+		
+		
+		if(masu[i]==1){
+			z=i%MASU_LINE;
+			for(m=1;m<MASU_LINE;m++){
+				if(m+z<MASU_LINE){
+					if(masu[i+m] >= 3)
+						break;
+					masu[i+m] = 2;
+				}
+			}
+			for(m=1;m<MASU_LINE;m++){
+				if(z-m > -1){
+					if(masu[i-m] >= 3)
+						break;
+					masu[i-m] = 2;
+				}
+			}
+			
+			for(m=MASU_LINE;m<MASU_MAX;m+=MASU_LINE){
+				if(i+m<MASU_MAX){
+					if(masu[i+m] >= 3)
+						break;
+					masu[i+m] = 2;
+				}
+			}
+			
+			for(m=MASU_LINE;m<MASU_MAX;m+=MASU_LINE){
+				if(i-m>-1){
+					if(masu[i-m] >= 3)
+						break;
+					masu[i-m] = 2;
+				}
+			}
+		}
+		
+		ch=0;
+		for(m=0;m<MASU_MAX;m++)
+			if(masu[m]==0)
+				ch++;
+		if(ch==0)
+			break;
+		
+	}
+
+	////適当配置が終了したんで、数字ブロック配置。	
+	z=0;
+	for(m=0;m<MASU_MAX;m++)
+		if(masu[m]==3){
+			if(masu[m+1] == 1 && ( (m%MASU_LINE) != (MASU_LINE-1) ) )z++;
+			if(masu[m-1] == 1 && ( (m%MASU_LINE) != 0 )  )z++;
+			if(masu[m+MASU_LINE] == 1 && ( (m%MASU_MAX) < (MASU_MAX-MASU_LINE) ) )z++;
+			if(masu[m-MASU_LINE] == 1 && ( (m%MASU_MAX) > (MASU_LINE-1) ) )z++;
+			if(z==0){
+			
+			
+				if(Math.floor(Math.random()*7)==1)
+					masu[m]=7;
+				else
+			
+					////取り敢えず、全部０
+					masu[m]=3;
+			}
+			else if(z==1)masu[m]=4;
+			else if(z==2)masu[m]=5;
+			else if(z==3)masu[m]=6;
+			else if(z==4)masu[m]=8;
+			z=0;
+		}
+
+	////光と照明を一旦消して、問題スタート
+	for(m=0;m<MASU_MAX;m++)
+		if(masu[m]==1 || masu[m]==2)
+			masu[m]=0;
+
+
+}
+
+/////盤面の保存と読み込み
+
+var SAVE_DATA = new Array( MASU_MAX );
+var SAVE_CHECK = 0;
+
+function save(){
+
+	SAVE_CHECK = lightPosNum;
+	for(m=0;m<MASU_MAX;m++)
+		SAVE_DATA[m]=masu[m];
+
+}
+
+function load(){
+	if(SAVE_CHECK > 0){
+		lightPosNum = SAVE_CHECK;
+		for(m=0;m<MASU_MAX;m++){
+			masu[m]=SAVE_DATA[m];
+			if(masu[m]==0)document.images[m].src = "zimen.gif";
+			else if(masu[m]==1)document.images[m].src = "light2.gif";
+			else if(masu[m]==2)document.images[m].src = "light.gif";
+			else if(masu[m]==3)document.images[m].src = "kabe.gif";
+			else if(masu[m]==4)document.images[m].src = "kabe1.gif";
+			else if(masu[m]==5)document.images[m].src = "kabe2.gif";
+			else if(masu[m]==6)document.images[m].src = "kabe3.gif";
+			else if(masu[m]==7)document.images[m].src = "kabe0.gif";
+			else if(masu[m]==8)document.images[m].src = "kabe4.gif";
+			else if(masu[m]==9)document.images[m].src = "zimen1.gif";
+		}
+	
+	}
+}
+
+/////セット
+
+var setch=1;
+
+function setbatu(){
+
+	setch=0;
+}
+function setlight(){
+
+	setch=1;
+}
+
+//-->
+</SCRIPT>
+
+
+
+<body>
+
+<SCRIPT LANGUAGE="JavaScript1.1">
+<!--
+
+
+var a = 10;
+var pot =0;
+
+var masu = new Array( MASU_MAX );
+
+/*
+var masu = new Array(
+3,0,0,0,0,4,0,0,0,0,
+0,0,3,0,0,0,6,0,4,0,
+0,4,4,0,3,0,0,0,0,0,
+0,0,0,0,0,0,0,0,7,0,
+7,0,0,0,7,3,0,0,0,0,
+0,0,0,0,3,3,0,0,0,3,
+0,6,0,0,0,0,0,0,0,0,
+0,0,0,0,0,5,0,3,3,0,
+0,6,0,3,0,0,0,3,0,0,
+0,0,0,0,3,0,0,0,0,7
+);
+*/
+
+mondai();
+
+document.write('びじゅつかん？ ランダム問題生成アルゴリズム　著作ｂｙふぁるす　ver1.889');
+
+document.write('<BR><INPUT TYPE="button" VALUE="　照明を置く　" onClick="setlight();">');
+document.write('　　<INPUT TYPE="button" VALUE="　×印を置く　" onClick="setbatu();">');
+
+document.write('<table border="0" Cellspacing="0">');
+
+for(m=0,i=0;m< MASU_LINE ;m++){
+	document.write('<tr>');
+	for(j=0;j< MASU_LINE ;j++){
+		document.write('<td><a href="#" onClick="set('+ i + ');"> ');
+		if( masu[i]==3 )document.write('<img src="kabe.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+		else if( masu[i]==4 )document.write('<img src="kabe1.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+		else if( masu[i]==5 )document.write('<img src="kabe2.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+		else if( masu[i]==6 )document.write('<img src="kabe3.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+		else if( masu[i]==7 )document.write('<img src="kabe0.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+		else if( masu[i]==8 )document.write('<img src="kabe4.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+		else if( masu[i]==2 )document.write('<img src="light.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+		else if( masu[i]==1 )document.write('<img src="light2.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+	 	else {
+	 		document.write('<img src="zimen.gif" WIDTH="16" HEIGHT="16" BORDER="0">');
+			masu[i]=0;
+		}
+		document.write('</a></td>');
+		i++;
+	}
+}
+document.write('</table>');
+
+document.write('<BR><INPUT TYPE="button" VALUE="　制覇　" onClick="okk();">')
+
+/*
+document.write('　　　<INPUT TYPE="button" VALUE="　保存　" onClick="save();">')
+document.write('　　　<INPUT TYPE="button" VALUE="　読込　" onClick="load();">')
+*/
+
+//-->
+</SCRIPT>
+
+<br><br>
+
+<a href="6.html">導入編</a>　６マス<br><br></td>
+<a href="10.html">初級者</a>　１０マス<br><br></td>
+<a href="20.html">中級者</a>　２０マス<br><br></td>
+<a href="30.html">上級者</a>　３０マス<br><br></td>
+<a href="40.html">超級者</a>　４０マス<br><br></td>
+<a href="50.html">危険編</a>　５０マス<br><br></td>
+<a href="100.html">神＿者</a>　１００マス<br><br></td>
+
+</body>
+</html>
